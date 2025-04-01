@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h2, h3 {
+            color: #343a40;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .logout-btn {
+            display: block;
+            width: 150px;
+            text-align: center;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+        .no-data {
+            text-align: center;
+            font-weight: bold;
+            color: #555;
+            padding: 15px;
+        }
+        .remove-btn {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
+        .status-online {
+            color: green;
+            font-weight: bold;
+        }
+        .status-offline {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Admin Dashboard</h2>
+    <p>Welcome, <strong>{{ session.get('admin_username', 'Admin') }}</strong></p>
+
+    <h3>Reserved Parking Slots</h3>
+
+    {% if booked_slots %}
+    <table>
+        <tr>
+            <th>Slot Number</th>
+            <th>Username</th>
+            <th>Car Number</th>
+            <th>Parking Date</th>
+            <th>Parking Time</th>
+            <th>Hours</th>
+            <th>Action</th>
+        </tr>
+        {% for slot in booked_slots %}
+        <tr>
+            <td>{{ slot.slot }}</td>
+            <td>{{ slot.username or "Unknown" }}</td>
+            <td>{{ slot.carNumber or "N/A" }}</td>
+            <td>{{ slot.parkingDate or "N/A" }}</td>
+            <td>{{ slot.parkingTime or "N/A" }}</td>
+            <td>{{ slot.hours or "N/A" }}</td>
+            <td>
+                <form action="{{ url_for('delete_reservation', reservation_id=slot.reservation_id) }}" method="post">
+                    <button type="submit" class="remove-btn">Remove</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="no-data">No reserved parking slots found.</p>
+    {% endif %}
+
+    <h3>All Users</h3>
+
+    {% if users %}
+    <table>
+        <tr>
+            <th>Username</th>
+            <th>Phone</th>
+            <th>Status</th>
+        </tr>
+        {% for user_id, user in users.items() %}
+        <tr>
+            <td>{{ user.username or "Unknown" }}</td>
+            <td>{{ user.phone or "N/A" }}</td>
+            <td>
+                {% if user.logged_in %}
+                    <span class="status-online">Online</span>
+                {% else %}
+                    <span class="status-offline">Offline</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="no-data">No users found.</p>
+    {% endif %}
+
+    <a href="{{ url_for('admin_logout') }}" class="logout-btn">Logout</a>
+
+</body>
+</html>

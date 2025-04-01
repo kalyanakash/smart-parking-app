@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Payment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Parking Payment</h2>
+        
+        <div class="card shadow-lg p-4 mt-4">
+            <h4 class="text-center">Slot: <strong>{{ slot }}</strong></h4>
+            <p class="text-center">Your parking time started at: <strong>{{ start_time }}</strong></p>
+            
+            <div class="text-center">
+                <h5>Hourly Rate: ₹20</h5>
+                <h5>Time Parked: <strong>{{ hours_parked }} hour(s)</strong></h5>
+                <h5>Total Amount: ₹<strong>{{ total_price }}</strong></h5>
+            </div>
+            
+            <div class="text-center mt-4">
+                <form action="{{ url_for('process_payment') }}" method="post">
+                    <input type="hidden" name="slot" value="{{ slot }}">
+                    <input type="hidden" name="hours_parked" value="{{ hours_parked }}">
+                    <input type="hidden" name="total_price" value="{{ total_price }}">
+                    <button type="submit" class="btn btn-success">Proceed to Payment</button>
+                </form>
+                <a href="/dashboard" class="btn btn-secondary mt-2">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
